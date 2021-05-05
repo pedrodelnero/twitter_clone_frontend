@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 
+import { PrivateRouter, PublicRouter } from './Components/';
 import {
-  SignUpPage,
   LoginPage,
-  Main,
-  PrivateRouter,
-  PublicRouter,
-} from './Components/';
+  SignUpPage,
+  HomePage,
+  ProfilePage,
+  ExplorePage,
+} from './Pages';
 import { IS_AUTH } from './Graphql/Queries';
 
 const authToken = Cookies.get('auth');
@@ -48,8 +49,20 @@ function App() {
             />
             <PrivateRouter
               exact
+              path="/home"
+              component={HomePage}
+              authStatus={auth.status}
+            />
+            <PrivateRouter
+              exact
+              path="/explore"
+              component={ExplorePage}
+              authStatus={auth.status}
+            />
+            <PrivateRouter
+              exact
               path="/:handle"
-              component={Main}
+              component={ProfilePage}
               authStatus={auth.status}
             />
             <PublicRouter

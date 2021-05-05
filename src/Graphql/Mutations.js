@@ -13,7 +13,13 @@ export const CREATE_USER = gql`
       password: $password
       confirmPassword: $confirmPassword
     ) {
-      id
+      success
+      message
+      user {
+        id
+        name
+        handle
+      }
     }
   }
 `;
@@ -63,17 +69,10 @@ export const CREATE_POST = gql`
   }
 `;
 
-export const CREATE_LIKE = gql`
+export const TOGGLE_LIKE = gql`
   mutation($postId: ID!) {
-    createLike(postId: $postId) {
-      id
-    }
-  }
-`;
-
-export const DELETE_LIKE = gql`
-  mutation($postId: ID!) {
-    deleteLike(postId: $postId) {
+    toggleLike(postId: $postId) {
+      success
       message
     }
   }
