@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { useLocation, useParams } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import {
   Box,
@@ -15,21 +14,21 @@ import {
 } from '@chakra-ui/react';
 
 import { CREATE_POST } from '../../Graphql/Mutations';
+import { GET_POSTS } from '../../Graphql/Queries';
 
 const MenuItems = ({ isOpen, onClose }) => {
   const [postText, setPostText] = useState('');
-  const [createPost] = useMutation(CREATE_POST);
+  const [createPost] = useMutation(CREATE_POST, {
+    refetchQueries: [{ query: GET_POSTS }],
+  });
 
-  const handleCreatePost = () => {
-    createPost({
+  const handleCreatePost = async () => {
+    await createPost({
       variables: { text: postText },
     });
+    onClose();
   };
 
-  // const params = useParams();
-  // const location = useLocation();
-
-  // console.log('Menu', params, location);
   return (
     <Modal
       isOpen={isOpen}

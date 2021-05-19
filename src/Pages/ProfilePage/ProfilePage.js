@@ -16,7 +16,9 @@ import { Layout, Post } from '../../Components';
 
 const ProfilePage = () => {
   const { loading, error, data: postsData } = useQuery(GET_POSTS_BY_USER);
-  const { loading1, error1, data: likesData } = useQuery(GET_LIKES_BY_USER);
+  const { loading: likeLoading, error: likeErr, data: likesData } = useQuery(
+    GET_LIKES_BY_USER
+  );
 
   return (
     <Layout>
@@ -29,7 +31,7 @@ const ProfilePage = () => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Box py="3" border="1px dashed yellow" width="100%">
+                <Box py="3" width="100%">
                   {loading ? (
                     <CircularProgress isIndeterminate color="green.300" />
                   ) : (
@@ -45,8 +47,8 @@ const ProfilePage = () => {
                 </Box>
               </TabPanel>
               <TabPanel>
-                <Box py="3" border="1px dashed yellow" width="100%">
-                  {loading1 ? (
+                <Box py="3" width="100%">
+                  {likeLoading ? (
                     <CircularProgress isIndeterminate color="green.300" />
                   ) : (
                     likesData?.getLikesByUser?.map((like) => (
@@ -57,7 +59,9 @@ const ProfilePage = () => {
                       />
                     ))
                   )}
-                  {error1 && <Text color="white">Error: {error1.message}</Text>}
+                  {likeErr && (
+                    <Text color="white">Error: {likeErr.message}</Text>
+                  )}
                 </Box>
               </TabPanel>
             </TabPanels>

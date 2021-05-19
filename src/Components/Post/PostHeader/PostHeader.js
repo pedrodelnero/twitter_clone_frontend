@@ -1,35 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
+import { EditIcon } from '@chakra-ui/icons';
 
 import { GET_USERFOLLOWERS_BY_FOLLOWEDID } from '../../../Graphql/Queries';
-import { FOLLOW_USER, UNFOLLOW_USER } from '../../../Graphql/Mutations';
+import { TOGGLE_FOLLOW } from '../../../Graphql/Mutations';
 
 const authToken = Cookies.get('auth');
 
 const PostHeader = ({ author }) => {
-  const { loading, error, data: userFollowerData } = useQuery(
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const [toggleFollow] = useMutation(TOGGLE_FOLLOW, {
+    refetchQueries: [
+      {
+        query: GET_USERFOLLOWERS_BY_FOLLOWEDID,
+
+        variables: { followedId: author.id },
+      },
+    ],
+  });
+
+  const { loading: queryLoading, error, data: userFollowerData } = useQuery(
     GET_USERFOLLOWERS_BY_FOLLOWEDID,
     {
       variables: { followedId: author.id },
     }
   );
-  const [followUser] = useMutation(FOLLOW_USER);
-  const [unfollowUser] = useMutation(UNFOLLOW_USER);
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>!! ERROR !!</Text>;
+  useEffect(() => {
+    if (userFollowerData?.userFollowers?.success) {
+      userFollowerData?.userFollowers?.followers.some(
+        (el) => el.followerId === authToken
+      )
+        ? setIsFollowing(true)
+        : setIsFollowing(false);
+    } else {
+      setIsFollowing(false);
+    }
+  }, [userFollowerData]);
 
   const handleFollow = () => {
-    followUser({ variables: { followedId: author.id } });
+    toggleFollow({
+      variables: { followedId: author.id },
+    });
   };
 
-  const handleUnfollow = () => {
-    unfollowUser({ variables: { followedId: author.id } });
-  };
-
-  // console.log('author', userFollowerData);
+  if (queryLoading) return <Text>Loading...</Text>;
+  if (error) return <Text>!! ERROR !!</Text>;
 
   return (
     <Box mb="2">
@@ -42,31 +61,26 @@ const PostHeader = ({ author }) => {
         <Box>
           <Text color="lightgray">@{author.handle}</Text>
         </Box>
-        {authToken === author.id ? null : userFollowerData.userFollowers.some(
-            (el) => el.followerId === authToken
-          ) ? (
-          <Box marginLeft="auto">
-            <Button
+        <Box marginLeft="auto">
+          {authToken === author.id ? (
+            <EditIcon
               color="white"
-              colorScheme="twitter"
-              borderRadius="20px"
-              onClick={handleUnfollow}
-            >
-              Unfollow
-            </Button>
-          </Box>
-        ) : (
-          <Box marginLeft="auto">
+              w={6}
+              h={6}
+              mr={6}
+              onClick={() => console.log('click')}
+            />
+          ) : (
             <Button
               color="white"
               colorScheme="twitter"
               borderRadius="20px"
               onClick={handleFollow}
             >
-              Follow
+              {isFollowing ? 'Unfollow' : 'Follow'}
             </Button>
-          </Box>
-        )}
+          )}
+        </Box>
       </Flex>
     </Box>
   );

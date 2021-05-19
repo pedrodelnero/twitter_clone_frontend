@@ -11,7 +11,6 @@ import { TOGGLE_LIKE } from '../../../Graphql/Mutations';
 const authToken = Cookies.get('auth');
 
 const LikeSection = ({ postId, likes, queryToFetch }) => {
-  // console.log('LIKE SEC', postId, likes);
   const [toggleLike] = useMutation(TOGGLE_LIKE, {
     refetchQueries: [{ query: queryToFetch }],
   });

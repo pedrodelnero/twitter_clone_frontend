@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Flex, Box, CircularProgress, Text } from '@chakra-ui/react';
 
@@ -7,8 +7,12 @@ import { GET_POSTS } from '../../Graphql/Queries';
 import { Layout, Post } from '../../Components';
 
 const HomePage = () => {
-  const { loading, error, data: postsData } = useQuery(GET_POSTS);
+  const [postsData, setPostsData] = useState(null);
+  const { loading, error, data } = useQuery(GET_POSTS);
 
+  useEffect(() => {
+    if (data) setPostsData(data);
+  }, [data]);
   return (
     <Layout>
       <Flex

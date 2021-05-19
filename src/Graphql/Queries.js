@@ -1,14 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const GET_ALL_USERS = gql`
-  query {
-    getAllUsers {
-      id
-      name
-      handle
-    }
-  }
-`;
 export const IS_AUTH = gql`
   query {
     isAuth {
@@ -45,6 +36,11 @@ export const GET_POSTS = gql`
         id
         name
         handle
+        followers {
+          id
+          followedId
+          followerId
+        }
       }
       likes {
         id
@@ -122,12 +118,15 @@ export const GET_LIKES_BY_USER = gql`
 export const GET_USERFOLLOWERS_BY_FOLLOWEDID = gql`
   query($followedId: ID!) {
     userFollowers(followedId: $followedId) {
-      id
-      followedId
-      followerId
-      follower {
+      success
+      followers {
         id
-        name
+        followedId
+        followerId
+        follower {
+          id
+          name
+        }
       }
     }
   }

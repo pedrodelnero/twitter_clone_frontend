@@ -45,22 +45,6 @@ export const LOGIN_USER = gql`
   }
 `;
 
-export const FOLLOW_USER = gql`
-  mutation($followedId: ID!) {
-    followUser(followedId: $followedId) {
-      id
-    }
-  }
-`;
-
-export const UNFOLLOW_USER = gql`
-  mutation($followedId: ID!) {
-    unfollowUser(followedId: $followedId) {
-      message
-    }
-  }
-`;
-
 export const CREATE_POST = gql`
   mutation($text: String!) {
     createPost(text: $text) {
@@ -72,6 +56,15 @@ export const CREATE_POST = gql`
 export const TOGGLE_LIKE = gql`
   mutation($postId: ID!) {
     toggleLike(postId: $postId) {
+      success
+      message
+    }
+  }
+`;
+
+export const TOGGLE_FOLLOW = gql`
+  mutation($followedId: ID!) {
+    toggleFollow(followedId: $followedId) {
       success
       message
     }

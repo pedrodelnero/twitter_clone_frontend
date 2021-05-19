@@ -12,18 +12,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/';
 
 import { CREATE_POST } from '../../../Graphql/Mutations';
-// import { GET_POSTS_FOR_FOLLOWER } from '../../../Graphql/Queries';
-import { TweetModal } from '../../../Components';
 
 const InputTweet = ({ query }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen } = useDisclosure();
   const [postText, setPostText] = useState('');
   const [createPost] = useMutation(CREATE_POST, {
     refetchQueries: [{ query }],
   });
 
-  const handleCreatePost = () => {
-    createPost({
+  const handleCreatePost = async () => {
+    await createPost({
       variables: { text: postText },
     });
   };
@@ -37,12 +35,7 @@ const InputTweet = ({ query }) => {
           </Heading>
         </Box>
       </Box>
-      <Box
-        py="2"
-        px="5"
-        // border="1px solid cyan"
-        display={['none', 'block', 'block', 'block']}
-      >
+      <Box py="2" px="5" display={['none', 'block']}>
         <Flex flexDirection="column">
           <Box py="2">
             <Input
@@ -87,7 +80,6 @@ const InputTweet = ({ query }) => {
           />
         </Box>
       </Button>
-      <TweetModal isOpen={isOpen} onClose={onClose} />
       <Box bg="gray.700" h="10px" />
     </Box>
   );
